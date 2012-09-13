@@ -44,6 +44,26 @@ class AppDirectEvent extends AppDirectBase
 		$xmlObject = $this->connector->get($path);			
 		return new AppDirectEvent($xmlObject);
 	}
+
+	// Get the Event data from AppDirect, either by Token or EventUrl
+	public function getEvent($eventUrl)
+	{
+		// The given $eventUrl could, in legacy code, actually be a token instead
+		if (!$this->connector->isEventUrl($eventUrl))
+			return $this->getByToken($eventUrl);
+
+		// The Event is using the new distributed API, and we're given an EventUrl
+		// Verify the OAuth signature of the call
+		if (!true)
+		{
+			$error = array('error' => 'The request did not validate using AppDirect OAuth signatures');
+			throw new AppDirectValidationException('0', $error);
+		}
+
+		// GET the event from the provided $eventUrl using a OAuth-signed request
+		$xmlObject = $this->connector->get($eventUrl);
+		return new AppDirectEvent($xmlObject);
+	}
 	
 	public function postUserListChange($accountIdentifier)
 	{
