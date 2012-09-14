@@ -38,11 +38,10 @@ class AppDirectEvent extends AppDirectBase
 		return 'event';
 	}
 	
+	// This exists only as backward compatibility with existing code
 	public function getByToken($token = null)
 	{
-		$path = 'events/'.$token;
-		$xmlObject = $this->connector->get($path);			
-		return new AppDirectEvent($xmlObject);
+		return $this->getEvent($token);
 	}
 
 	// Get the Event data from AppDirect, either by Token or EventUrl
@@ -50,19 +49,27 @@ class AppDirectEvent extends AppDirectBase
 	{
 		// The given $eventUrl could, in legacy code, actually be a token instead
 		if (!$this->connector->isEventUrl($eventUrl))
-			return $this->getByToken($eventUrl);
-
-		// The Event is using the new distributed API, and we're given an EventUrl
-		// Verify the OAuth signature of the call
-		if (!true)
 		{
-			$error = array('error' => 'The request did not validate using AppDirect OAuth signatures');
-			throw new AppDirectValidationException('0', $error);
+			// This is an old-style token. Properly path it.
+			$eventUrl = 'events/'. $eventUrl;
+		}
+		else
+		{
+			// The Event is using the new distributed API, and we're given an EventUrl
+			// Verify the OAuth signature of the call
+			//
+			// Todo: This can be deferred to get the wrapper functional, but MUST be done!
+			// Maybe see: OAuthSignatureMethod_HMAC_SHA1::check_signature()?
+			// Should be a library call, not a local method implementation
+			if (false)
+			{
+				$error = array('error' => 'The request did not validate using AppDirect OAuth signatures');
+				throw new AppDirectValidationException('401', $error);
+			}
 		}
 
 		// GET the event from the provided $eventUrl using a OAuth-signed request
-		$xmlObject = $this->connector->get($eventUrl);
-		return new AppDirectEvent($xmlObject);
+		return new AppDirectEvent($this->connector->get($eventUrl));
 	}
 	
 	public function postUserListChange($accountIdentifier)
