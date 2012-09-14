@@ -31,7 +31,7 @@ class AppDirectConnector
 	// Decide if the parameter given is a legacy Token, or a modern EventUrl
 	function isEventUrl($apiToken)
 	{
-		return (strtolower(substr($url, 0, 4)) == 'http')
+		return (strtolower(substr($apiToken, 0, 4)) == 'http');
 	}
 
 	// Fetch data from AppDirect using an OAuth signed request

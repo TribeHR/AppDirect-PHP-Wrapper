@@ -56,6 +56,8 @@ class AppDirectEvent extends AppDirectBase
 		else
 		{
 			// The Event is using the new distributed API, and we're given an EventUrl
+			$eventUrl = urldecode($eventUrl);
+
 			// Verify the OAuth signature of the call
 			//
 			// Todo: This can be deferred to get the wrapper functional, but MUST be done!
