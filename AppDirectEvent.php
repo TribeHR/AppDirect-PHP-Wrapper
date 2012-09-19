@@ -98,13 +98,17 @@ class AppDirectEvent extends AppDirectBase
 		return $this->connector->getSignedUrl($url);
 	}
 	
-	public function xmlResponse($success, $code, $message)
+	public function xmlResponse($success, $code, $message, $extraData = array())
 	{
 		$xmlResult = new SimpleXMLElement('<result></result>');
 		$xmlResult->addChild('success', ($success ? 'true' : 'false') );
 		if(!$success)
 			$xmlResult->addChild('errorCode', $code);
 		$xmlResult->addChild('message', $message);
+
+		foreach($extraData as $key => $value) {
+			$xmlResult->addChild($key, $value);
+		}
 		
 		return $xmlResult->asXML();		
 	}
