@@ -62,6 +62,13 @@ class AppDirectEvent extends AppDirectBase
 	//  - ALLOW_STATELESS: getEvent will pass the event to the requester, trusting the dummy data will be handled properly
 	public function getEvent($eventUrl, $statelessAction = self::TRAP_STATELESS)
 	{
+		// Verify the OAuth signature of the call
+		if(!$this->connector->verifySignature())
+		{
+			$error = array('error' => 'The request did not validate using AppDirect OAuth signatures');
+			throw new AppDirectValidationException('401', $error);
+		}
+		
 		// The given $eventUrl could, in legacy code, actually be a token instead
 		if (!$this->connector->isEventUrl($eventUrl))
 		{
@@ -72,17 +79,6 @@ class AppDirectEvent extends AppDirectBase
 		{
 			// The Event is using the new distributed API, and we're given an EventUrl
 			$eventUrl = urldecode($eventUrl);
-
-			// Verify the OAuth signature of the call
-			//
-			// Todo: This can be deferred to get the wrapper functional, but MUST be done!
-			// Maybe see: OAuthSignatureMethod_HMAC_SHA1::check_signature()?
-			// Should be a library call, not a local method implementation
-			if (false)
-			{
-				$error = array('error' => 'The request did not validate using AppDirect OAuth signatures');
-				throw new AppDirectValidationException('401', $error);
-			}
 		}
 
 		// GET the event from the provided $eventUrl using a OAuth-signed request
