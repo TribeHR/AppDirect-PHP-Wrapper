@@ -27,8 +27,14 @@ class AppDirectEvent extends AppDirectBase
 	
 	private $connector;
 
+	// Method behaviour flags
 	const TRAP_STATELESS = true;
 	const ALLOW_STATELESS = false;
+
+	// Event definition/action constants
+	const NOTICE_DEACTIVATED = 'DEACTIVATED';
+	const NOTICE_REACTIVATED = 'REACTIVATED';
+	const NOTICE_UPCOMING_INVOICE = 'UPCOMING_INVOICE';
 
 	public function __construct(SimpleXMLElement $xml = null)
 	{
