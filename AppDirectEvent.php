@@ -14,9 +14,6 @@ define('ACCOUNT_UNSYNC', 'ACCOUNT_UNSYNC');
 define('USER_SYNC', 'USER_SYNC');
 define('USER_LIST_CHANGE', 'USER_LIST_CHANGE');
 
-define('FLAG_STATELESS', 'STATELESS');
-define('FLAG_DEVELOPMENT', 'DEVELOPMENT');
-
 class AppDirectEvent extends AppDirectBase
 {	
 	var $type;
@@ -32,6 +29,9 @@ class AppDirectEvent extends AppDirectBase
 	const ALLOW_STATELESS = false;
 
 	// Event definition/action constants
+	const FLAG_STATELESS = 'STATELESS';
+	const FLAG_DEVELOPMENT = 'DEVELOPMENT';
+
 	const NOTICE_DEACTIVATED = 'DEACTIVATED';
 	const NOTICE_REACTIVATED = 'REACTIVATED';
 	const NOTICE_UPCOMING_INVOICE = 'UPCOMING_INVOICE';
@@ -93,7 +93,7 @@ class AppDirectEvent extends AppDirectBase
 		if ($statelessAction != self::ALLOW_STATELESS)
 		{
 			// Check if the event has the STATELESS flag set. If so, handle the return and abort.
-			if (isset($event->flag) && $event->flag == FLAG_STATELESS)
+			if (isset($event->flag) && $event->flag == self::FLAG_STATELESS)
 				die($event->xmlResponse(false, 'OPERATION_CANCELED', 'The STATELESS event was acknowledged and canceled'));
 		}
 
