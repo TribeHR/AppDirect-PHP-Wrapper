@@ -52,8 +52,8 @@ class AppDirectEvent extends AppDirectBase
 
 	// Get the Event data from AppDirect, either by Token or EventUrl
 	// @statelessAction:
-	//  - TRAP_STATELESS:  getEvent will handle the return for STATELESS events in a generic manner (default)
-	//  - ALLOW_STATELESS: getEvent will pass the event to the endpoint, trusting the dummy data will be handled properly
+	//  - TRAP_STATELESS:  getEvent will directly respond to the AppDirect request with a generic error (default)
+	//  - ALLOW_STATELESS: getEvent will pass the event to the requester, trusting the dummy data will be handled properly
 	public function getEvent($eventUrl, $statelessAction = self::TRAP_STATELESS)
 	{
 		// The given $eventUrl could, in legacy code, actually be a token instead
