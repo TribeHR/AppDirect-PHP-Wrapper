@@ -27,6 +27,13 @@ class AppDirectConnector
 		$url = $request->to_url();
 		return $url;	
 	}
+	
+	function verifySignature() {
+		$request = OAuthRequest::from_request();
+		$requestParams = $request->getParameters();
+		
+		return AuthSignatureMethod_HMAC_SHA1::check_signature($request, $this->consumer, null, $requestParams['oauth_signature']);
+	}
 
 	// Decide if the parameter given is a legacy Token, or a modern EventUrl
 	function isEventUrl($apiToken)
