@@ -101,20 +101,6 @@ class AppDirectEvent extends AppDirectBase
 		return $event;
 	}
 	
-	public function postUserListChange($accountIdentifier)
-	{
-		$endpoint = 'events/';
-		
-		$xmlData = new SimpleXMLElement('<event></event>');
-		$xmlData->addChild('type', USER_LIST_CHANGE);
-		$xmlData->addChild('payload');
-		$xmlData->payload->addChild('account');
-		$xmlData->payload->account->addChild('accountIdentifier', $accountIdentifier);
-
-		$xmlResult = $this->connector->post($endpoint, $xmlData->asXML());
-		return $xmlResult;
-	}
-	
 	public function signReturnUrl($params = array())
 	{
 		$url = $this->returnUrl;
