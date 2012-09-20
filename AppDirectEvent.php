@@ -14,6 +14,9 @@ define('ACCOUNT_UNSYNC', 'ACCOUNT_UNSYNC');
 define('USER_SYNC', 'USER_SYNC');
 define('USER_LIST_CHANGE', 'USER_LIST_CHANGE');
 
+define('FLAG_STATELESS', 'STATELESS');
+define('FLAG_DEVELOPMENT', 'DEVELOPMENT');
+
 class AppDirectEvent extends AppDirectBase
 {	
 	var $type;
@@ -23,6 +26,9 @@ class AppDirectEvent extends AppDirectBase
 	var $returnUrl;
 	
 	private $connector;
+
+	const TRAP_STATELESS = true;
+	const ALLOW_STATELESS = false;
 
 	public function __construct(SimpleXMLElement $xml = null)
 	{
@@ -45,7 +51,10 @@ class AppDirectEvent extends AppDirectBase
 	}
 
 	// Get the Event data from AppDirect, either by Token or EventUrl
-	public function getEvent($eventUrl)
+	// @statelessAction:
+	//  - TRAP_STATELESS:  getEvent will directly respond to the AppDirect request with a generic error (default)
+	//  - ALLOW_STATELESS: getEvent will pass the event to the requester, trusting the dummy data will be handled properly
+	public function getEvent($eventUrl, $statelessAction = self::TRAP_STATELESS)
 	{
 		// The given $eventUrl could, in legacy code, actually be a token instead
 		if (!$this->connector->isEventUrl($eventUrl))
@@ -71,7 +80,19 @@ class AppDirectEvent extends AppDirectBase
 		}
 
 		// GET the event from the provided $eventUrl using a OAuth-signed request
-		return new AppDirectEvent($this->connector->get($eventUrl));
+		$event = new AppDirectEvent($this->connector->get($eventUrl));
+
+		// If STATELESS events are to be trapped, detect them here and return to AppDirect appropriately.
+		// Do the negative condition check so that if anything invalid is passed, the default action is taken
+		if ($statelessAction != self::ALLOW_STATELESS)
+		{
+			// Check if the event has the STATELESS flag set. If so, handle the return and abort.
+			if (isset($event->flag) && $event->flag == FLAG_STATELESS)
+				die($event->xmlResponse(false, 'OPERATION_CANCELED', 'The STATELESS event was acknowledged and canceled'));
+		}
+
+		// Return the fully-built event definition
+		return $event;
 	}
 	
 	public function postUserListChange($accountIdentifier)
