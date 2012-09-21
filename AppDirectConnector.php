@@ -30,9 +30,11 @@ class AppDirectConnector
 	
 	function verifySignature() {
 		$request = OAuthRequest::from_request();
-		$requestParams = $request->getParameters();
+		$requestParams = $request->get_parameters();
+
+		$signer = new OAuthSignatureMethod_HMAC_SHA1();
 		
-		return AuthSignatureMethod_HMAC_SHA1::check_signature($request, $this->consumer, null, $requestParams['oauth_signature']);
+		return $signer->check_signature($request, $this->consumer, null, $requestParams['oauth_signature']);
 	}
 
 	// Decide if the parameter given is a legacy Token, or a modern EventUrl
