@@ -35,6 +35,9 @@ class AppDirectEvent extends AppDirectBase
 	const NOTICE_DEACTIVATED = 'DEACTIVATED';
 	const NOTICE_REACTIVATED = 'REACTIVATED';
 	const NOTICE_UPCOMING_INVOICE = 'UPCOMING_INVOICE';
+	
+	const NOTICE_STATUS_TRIAL_EXPIRED = 'FREE_TRIAL_EXPIRED';
+	const NOTICE_STATUS_ACTIVE = 'ACTIVE';
 
 	public function __construct(SimpleXMLElement $xml = null)
 	{
