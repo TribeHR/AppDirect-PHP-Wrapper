@@ -113,7 +113,7 @@ class AppDirectEvent extends AppDirectBase
 	
 	public function xmlResponse($success, $code, $message, $extraData = array())
 	{
-		$xmlResult = new SimpleXMLElement('<result></result>');
+		$xmlResult = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><result></result>');
 		$xmlResult->addChild('success', ($success ? 'true' : 'false') );
 		if(!$success)
 			$xmlResult->addChild('errorCode', $code);
